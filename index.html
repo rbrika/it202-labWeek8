@@ -1,38 +1,48 @@
 <!DOCTYPE html>
 <html>
-    
-
-<head>
-    <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <style>
-        .template{
-            display: none;
-        }
-    </style>
-</head>
+    <head>
+		<title>Exam2</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+              integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style>
+            .template{
+                display: none;
+            }
+            .column {
+                float: left;
+                width: 50%;
+            }
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+        </style>
+    </head>
     <body>
-       
-        <ul id="list-group" style="width: auto;">
-           </ul>
-        <div id ="cards">  </div>
-	<div id="cardDets" class="card template" style="width: auto;">
-		<div class="card-body">
-			<h5 class="card-title">Card title</h5>
-			<h6 class="card-date mb-2 text-muted">Card subtitle</h6>
-			<p class="card-note">Some quick example text to build on
+        <div class="row">
+            <div class="column">
+                <ul id="list-group" style="width: auto;"></ul>
+            </div>
+            <div class="column">
+              <div id ="cards" style="width: auto;">Click on an item to the left to see the employees in each department</div>
+            </div>
+        </div>
+	    <div id="cardDets" class="card template" style="width: auto;">
+		    <div class="card-body">
+			    <h5 class="card-title">Card title</h5>
+			    <h6 class="card-date mb-2 text-muted">Card subtitle</h6>
+			    <p class="card-note">Some quick example text to build on
                 the card title and make up the bulk of the card's content.</p>
-            <h6 class="card-sal mb-2 text-muted">Card subtitle</h6>
-            
-		</div>
-	</div> 
-            <script >
+                <h6 class="card-sal mb-2 text-muted">Card subtitle</h6>
+		    </div>
+	    </div> 
+        <script>
             $(document).ready(function(){
                 var url='https://data.cityofchicago.org/resource/xzkq-xp2w.json?';
-               $('#tempItem').css('display', 'none'); 
                 $.get(url+'$select=department,count(department)&$group=department&$order=department',function(response){
-                console.log(response);
+                    //console.log(response);
                     $.each(response, function(i,v){
                         var clone=$("<li>").addClass("tempItem list-group-item d-flex justify-content-between align-items-center").text(v.department);   
                         var span = $("<span>").addClass("badge badge-primary badge-pill").text(v.count_department);
@@ -41,28 +51,26 @@
                         clone.attr("id","");
                         clone.removeClass("tempItem");
                         console.log("Changing display style");
-                        
                         $("#list-group").append(clone);
                     });
                 });
                 $("body").on("click",".list-group-item",function(){
                     $.get(url+'&department='+encodeURIComponent($(this).attr("data-dept")),function(data){
-                        console.log(data);
-                        $("#cards").empty;
+                        //console.log(data);
+                        //console.log('clicked on list item');
+                        $("#cards").empty();
                         $.each(data, function(i,v){
                             var clone= $(".template").clone();
                             clone.find(".card-title").text(v.name);
                             clone.find(".card-date").text(v.department);
-                            clone.find(".card-sal").text(v.salary_or_hourly+": "+v.annual_salary);
+                            clone.find(".card-sal").text(v.salary_or_hourly+": $"+v.annual_salary);
                             clone.find(".card-note").text(v.job_titles);
-                           clone.removeClass("template");
+                            clone.removeClass("template");
                             $("#cards").append(clone);
                         });
                     });
                 });
-               
-                
             });
         </script>
     </body>
-    </html>
+</html>
